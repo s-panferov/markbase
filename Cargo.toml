@@ -1,0 +1,18 @@
+[package]
+name = "protobase"
+version = "0.1.0"
+authors = ["Stanislav Panferov <fnight.m@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rocksdb="*"
+mozjs="*"
+actix-web="*"
+slog="*"
+slog-json="*"
+slog-term="*"
+slog-async="*"
+libc = "0.2"
+
+[patch.crates-io]
+rocksdb = { path = '../rust-rocksdb' }
