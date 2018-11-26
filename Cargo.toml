@@ -8,11 +8,16 @@ edition = "2018"
 rocksdb="*"
 mozjs="*"
 actix-web="*"
+actix="*"
+futures="0.1"
 slog="*"
 slog-json="*"
 slog-term="*"
 slog-async="*"
+slog-scope="*"
 libc = "0.2"
+
+oxide-auth = { git = 'https://github.com/HeroicKatora/oxide-auth', branch = 'dev-v0.4.0', default-features = false, features = ["actix-frontend"] }
 
 [patch.crates-io]
 rocksdb = { path = '../rust-rocksdb' }
