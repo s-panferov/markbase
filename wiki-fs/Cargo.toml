@@ -1,0 +1,9 @@
+[package]
+name = "wiki-fs"
+version = "0.1.0"
+authors = ["Stanislav Panferov <fnight.m@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+notify="4.0.0"
+walkdir="2"

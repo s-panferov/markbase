@@ -1,0 +1,22 @@
+[package]
+name = "wiki-host"
+version = "0.1.0"
+authors = ["Stanislav Panferov <fnight.m@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+actix-web="*"
+actix="*"
+wiki-log = { path = "../wiki-log" }
+wiki-db = { path = "../wiki-db" }
+wiki-vm = { path = "../wiki-vm" }
+wiki-fs = { path = "../wiki-fs" }
+url="1.7"
+futures="0.1"
+clap="*"
+rayon="*"
+
+[dependencies.config]
+version = "0.9"
+default-features = false
+features = ["yaml"]

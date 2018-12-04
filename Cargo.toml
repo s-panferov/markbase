@@ -1,23 +1,12 @@
-[package]
-name = "protobase"
-version = "0.1.0"
-authors = ["Stanislav Panferov <fnight.m@gmail.com>"]
-edition = "2018"
+[workspace]
 
-[dependencies]
-rocksdb="*"
-mozjs="*"
-actix-web="*"
-actix="*"
-futures="0.1"
-slog="*"
-slog-json="*"
-slog-term="*"
-slog-async="*"
-slog-scope="*"
-libc = "0.2"
-
-oxide-auth = { git = 'https://github.com/HeroicKatora/oxide-auth', branch = 'dev-v0.4.0', default-features = false, features = ["actix-frontend"] }
+members = [
+    "wiki-log",
+    "wiki-db",
+    "wiki-vm",
+    "wiki-fs",
+    "wiki-host",
+]
 
 [patch.crates-io]
 rocksdb = { path = '../rust-rocksdb' }

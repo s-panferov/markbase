@@ -1,0 +1,22 @@
+{
+  "name": "cli",
+  "version": "1.0.0",
+  "description": "Implementing a typed cli for sites",
+  "main": "index.js",
+  "author": "Stanislav Panferov <fnight.m@gmail.com>",
+  "license": "Closed",
+  "workspaces": [
+    "wiki-build",
+    "wiki-ui",
+    "wiki-mdx"
+  ],
+  "private": true,
+  "scripts": {
+    "example": "cargo watch -w wiki-host -w wiki-db -w wiki-log -w wiki-vm -x 'run -- --input=wiki-example'"
+  },
+  "devDependencies": {
+    "lerna": "^3.5.1",
+    "typescript": "^3.2.1",
+    "prettier": "^1.15.3"
+  }
+}

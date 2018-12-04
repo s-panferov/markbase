@@ -1,0 +1,9 @@
+{
+  "name": "@wiki/mdx",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@mdx-js/mdx": "^0.16.5",
+    "@types/node": "^10.12.11"
+  },
+  "dependencies": {}
+}
