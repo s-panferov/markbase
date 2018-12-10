@@ -1,3 +1,5 @@
+#![crate_type = "dylib"]
+
 extern crate libc;
 extern crate mozjs;
 
@@ -19,7 +21,7 @@ impl Compiler {
     Compiler { vm, func }
   }
 
-  pub fn compile(&mut self, buf: String) -> Result<String, ErrorInfo> {
+  pub fn compile(&mut self, buf: &str) -> Result<String, ErrorInfo> {
     self.func.call_string(&mut self.vm, buf)
   }
 }

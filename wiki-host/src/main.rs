@@ -1,3 +1,6 @@
+#![feature(async_await)]
+#![feature(futures_api)]
+
 extern crate actix;
 extern crate actix_web;
 extern crate futures;
@@ -10,10 +13,12 @@ extern crate wiki_vm;
 extern crate clap;
 
 use std::path::PathBuf;
+use std::sync::Arc;
 use wiki_log::prelude::*;
 
 mod cli;
 mod conf;
+mod state;
 mod work;
 
 fn main() {
@@ -36,14 +41,23 @@ fn main() {
 
   // we have to crate a "root" runtime
   let _vm = wiki_vm::Vm::new();
-  let worker = work::WorkerPool::new();
+  let mut worker = work::WorkerPool::new();
 
-  let db = wiki_db::WikiBase::new(PathBuf::from(storage));
+  let storage = PathBuf::from(storage);
+  let root = PathBuf::from(input);
 
-  let rx = wiki_fs::scan(input);
+  let base = wiki_db::WikiBase::new(&storage);
+  let ctx = Arc::new(self::state::Context {
+    root: root,
+    base: base,
+  });
+
+  let rx = wiki_fs::scan(&ctx.root);
+
   for path in rx.iter() {
     if path.to_str().unwrap().ends_with(".mdx") {
-      println!("{:?}", worker.compile(path).unwrap());
+      // FIXME
+      futures::executor::block_on(worker.compile(ctx.clone(), path));
     }
   }
 

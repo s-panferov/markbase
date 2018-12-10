@@ -7,4 +7,9 @@ edition = "2018"
 [dependencies]
 rocksdb="*"
 tantivy="*"
+serde="*"
+serde_derive="*"
+serde_yaml="*"
+serde_json="*"
+sha2="*"
 wiki-log = { path = "../wiki-log" }

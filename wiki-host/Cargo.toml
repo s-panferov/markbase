@@ -12,9 +12,9 @@ wiki-db = { path = "../wiki-db" }
 wiki-vm = { path = "../wiki-vm" }
 wiki-fs = { path = "../wiki-fs" }
 url="1.7"
-futures="0.1"
+futures-preview = "0.3.0-alpha.10"
 clap="*"
-rayon="*"
+failure="^0.1.3"
 
 [dependencies.config]
 version = "0.9"

@@ -6,15 +6,17 @@ extern crate slog_scope;
 use slog::slog_o;
 
 pub mod prelude {
-   pub use slog::slog_o;
+   pub use slog::slog_b;
    pub use slog::slog_info;
+   pub use slog::slog_kv;
    pub use slog::slog_log;
+   pub use slog::slog_o;
    pub use slog::slog_record;
    pub use slog::slog_record_static;
-   pub use slog::slog_b;
-   pub use slog::slog_kv;
    pub use slog_scope::info;
 }
+
+pub use slog::Logger;
 
 use slog::Drain;
 pub use slog_scope::set_global_logger;

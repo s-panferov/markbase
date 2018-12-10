@@ -4,7 +4,7 @@ use std::sync::mpsc::{channel, Receiver};
 use std::thread;
 
 use notify::{watcher, DebouncedEvent, RecursiveMode, Watcher};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::Duration;
 use walkdir::WalkDir;
 
@@ -14,10 +14,10 @@ pub enum WatchEvent {
   Rename(PathBuf, PathBuf),
 }
 
-pub fn scan(folder: &str) -> Receiver<PathBuf> {
+pub fn scan(folder: &Path) -> Receiver<PathBuf> {
   // Create a channel to receive the events.
   let (tx, rx) = channel::<PathBuf>();
-  let folder = folder.to_string();
+  let folder = folder.to_owned();
   thread::spawn(move || {
     let walker = WalkDir::new(folder)
       .follow_links(true)

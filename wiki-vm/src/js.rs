@@ -30,7 +30,7 @@ pub struct Func {
 }
 
 impl Func {
-  pub fn call_string(&self, vm: &mut Vm, value: String) -> Result<String, ErrorInfo> {
+  pub fn call_string(&self, vm: &mut Vm, value: &str) -> Result<String, ErrorInfo> {
     unsafe {
       let cx = vm.rt.cx();
       let _ac = js::JSAutoCompartment::new(cx, vm.global.handle().get());
