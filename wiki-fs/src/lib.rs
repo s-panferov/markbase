@@ -32,20 +32,22 @@ pub fn scan(folder: &Path) -> Receiver<PathBuf> {
   rx
 }
 
-pub fn watch(folder: &str) -> Receiver<WatchEvent> {
+pub fn watch(folder: &Path) -> Receiver<WatchEvent> {
   let (tx, rx) = channel();
   let (tx_out, rx_out) = channel::<WatchEvent>();
 
   // Create a watcher object, delivering debounced events.
   // The notification back-end is selected based on the platform.
-  let mut watcher = watcher(tx, Duration::from_millis(500)).unwrap();
+  let mut watcher = watcher(tx, Duration::from_millis(100)).unwrap();
 
   // Add a path to be watched. All files and directories at that path and
   // below will be monitored for changes.
-  watcher.watch(folder, RecursiveMode::Recursive).unwrap();
+  watcher.watch(&folder, RecursiveMode::Recursive).unwrap();
+  println!("Wait {:?}", folder);
 
   thread::spawn(move || loop {
     let item = rx.recv();
+    println!("{:?}", item);
     if item.is_ok() {
       match item.unwrap() {
         DebouncedEvent::Write(path) => tx_out.send(WatchEvent::Update(path)).unwrap(),

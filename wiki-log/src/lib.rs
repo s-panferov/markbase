@@ -1,11 +1,13 @@
 extern crate slog;
 extern crate slog_json;
 
-extern crate slog_scope;
-
 use slog::slog_o;
 
 pub mod prelude {
+   pub use slog::crit;
+   pub use slog::debug;
+   pub use slog::info;
+   pub use slog::error;
    pub use slog::slog_b;
    pub use slog::slog_info;
    pub use slog::slog_kv;
@@ -13,13 +15,12 @@ pub mod prelude {
    pub use slog::slog_o;
    pub use slog::slog_record;
    pub use slog::slog_record_static;
-   pub use slog_scope::info;
+   pub use slog::trace;
+   pub use slog::warn;
 }
 
-pub use slog::Logger;
-
 use slog::Drain;
-pub use slog_scope::set_global_logger;
+pub use slog::Logger;
 
 pub fn init() -> (slog::Logger) {
    let decorator = slog_term::TermDecorator::new().build();

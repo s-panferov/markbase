@@ -1,23 +1,21 @@
-use mozjs::jsapi as js;
-use mozjs::rooted;
-use mozjs::rust::{Runtime, Trace, SIMPLE_GLOBAL_CLASS};
-
+use std::collections::BTreeMap;
 use std::ffi::CString;
+use std::os;
 use std::ptr;
+use std::rc::Rc;
 use std::slice::from_raw_parts;
 use std::str;
 
-use std::rc::Rc;
-
 use libc::c_uint;
-use mozjs::jsapi::{Heap, JSContext, JSObject, JSTracer, Value};
-use std::collections::BTreeMap;
-use std::os;
-
-use wiki_log::prelude::*;
 
 use mozjs::conversions::FromJSValConvertible;
 use mozjs::conversions::ToJSValConvertible;
+use mozjs::jsapi as js;
+use mozjs::jsapi::{Heap, JSContext, JSObject, JSTracer, Value};
+use mozjs::rooted;
+use mozjs::rust::{Runtime, Trace, SIMPLE_GLOBAL_CLASS};
+
+use wiki_log::prelude::*;
 
 pub struct Vm {
   pub funcs: BTreeMap<String, Rc<Func>>,
@@ -240,7 +238,6 @@ impl Drop for Vm {
 
 unsafe extern "C" fn require(context: *mut js::JSContext, argc: u32, vp: *mut js::Value) -> bool {
   let args = js::CallArgs::from_vp(vp, argc);
-  info!("Require {:?}", args);
   // args.rval().set(val::Int32Value(2));
   return true;
 }

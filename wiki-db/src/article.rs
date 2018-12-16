@@ -16,6 +16,7 @@ pub struct Article {
   pub key: ArticleKey,
   pub title: String,
   pub body: String,
+  pub compiler_ver: u32,
   pub compiled: Option<String>,
   pub hash: ArticleHash,
   pub meta: serde_yaml::Mapping,
@@ -41,7 +42,12 @@ impl Article {
     ArticleHash(hasher.result().as_slice().to_vec())
   }
 
-  pub fn from_str(key: ArticleKey, body: String, hash: Option<ArticleHash>) -> Article {
+  pub fn from_str(
+    key: ArticleKey,
+    body: String,
+    hash: Option<ArticleHash>,
+    compiler_ver: u32,
+  ) -> Article {
     let meta = if body.starts_with("---") {
       let end = body[3..]
         .find("---")
@@ -65,6 +71,7 @@ impl Article {
       key: key,
       title: title,
       compiled: None,
+      compiler_ver,
       body,
       hash,
       meta,

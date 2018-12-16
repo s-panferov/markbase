@@ -1,21 +1,23 @@
 use std::cell::RefCell;
-use std::sync::Arc;
-use wiki_vm::{Compiler, ErrorInfo};
-
 use std::fs::read;
 use std::path::PathBuf;
+use std::sync::Arc;
 
 use ::futures::Future;
+use failure::Fail;
 use futures::task::SpawnExt;
 
-use failure::Fail;
+use wiki_db::Article;
+use wiki_log::prelude::*;
+use wiki_vm::{Compiler, ErrorInfo};
 
 use crate::state::Context;
-use wiki_db::Article;
 
 thread_local! {
   pub static COMPILER: RefCell<Option<Compiler>> = RefCell::new(None);
 }
+
+pub static VERSION: u32 = 1;
 
 pub struct WorkerPool {
   pool: futures::executor::ThreadPool,
@@ -56,20 +58,18 @@ impl WorkerPool {
     ctx: Arc<Context>,
     file_name: PathBuf,
   ) -> impl Future<Output = Result<Article, BuildError>> {
-    println!("Spawn {:?}", file_name);
-
     let future = async move {
       let key = Article::key(&ctx.root, &file_name);
       let mut article = ctx.base.get(&key);
 
-      let source = std::str::from_utf8(std::fs::read(file_name).unwrap().as_slice())
+      let source = std::str::from_utf8(std::fs::read(&file_name).unwrap().as_slice())
         .unwrap()
         .to_owned();
 
       let hash = Article::content_hash(&source);
 
       let updated = match article.as_mut() {
-        Some(mut article) => article.hash != hash,
+        Some(article) => article.compiler_ver != VERSION || article.hash != hash,
         None => true,
       };
 
@@ -86,14 +86,16 @@ impl WorkerPool {
               article.compiled = Some(result);
               article.hash = hash;
             }
-            None => article = Some(Article::from_str(key, source, Some(hash))),
+            None => article = Some(Article::from_str(key, source, Some(hash), VERSION)),
           },
           Err(err) => return Err(BuildError::JsError(err)),
         };
+      } else {
+        debug!(ctx.log, "File is not updated"; "file" => file_name.to_str().unwrap());
       };
 
       let article = article.unwrap();
-      ctx.base.save(&article);
+      ctx.base.save(&article).unwrap();
 
       Ok(article)
     };

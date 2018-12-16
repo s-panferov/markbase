@@ -6,6 +6,7 @@ extern crate tantivy;
 #[macro_use]
 extern crate serde_derive;
 
+use failure::Fail;
 use rocksdb::DB;
 use std::path::Path;
 
@@ -15,6 +16,12 @@ mod article;
 mod search;
 
 use self::search::SearchEngine;
+
+#[derive(Debug, Fail)]
+pub enum BaseError {
+  #[fail(display = "StorageError: {:?}", 0)]
+  StorageError(rocksdb::Error),
+}
 
 pub struct WikiBase {
   db: DB,
@@ -36,10 +43,13 @@ impl WikiBase {
       .map(|b| serde_json::from_slice(&*b).unwrap())
   }
 
-  pub fn save(&self, article: &Article) -> Result<(), rocksdb::Error> {
-    self.db.put(
-      article.key.as_bytes(),
-      serde_json::to_vec(&article).unwrap().as_slice(),
-    )
+  pub fn save(&self, article: &Article) -> Result<(), BaseError> {
+    self
+      .db
+      .put(
+        article.key.as_bytes(),
+        serde_json::to_vec(&article).unwrap().as_slice(),
+      )
+      .map_err(BaseError::StorageError)
   }
 }

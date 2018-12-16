@@ -13,3 +13,4 @@ serde_yaml="*"
 serde_json="*"
 sha2="*"
 wiki-log = { path = "../wiki-log" }
+failure="^0.1.3"

@@ -4,6 +4,10 @@ version = "0.1.0"
 authors = ["Stanislav Panferov <fnight.m@gmail.com>"]
 edition = "2018"
 
+[lib]
+name = "wiki_vm"
+crate-type = ["dylib"]
+
 [dependencies]
 mozjs="*"
 libc = "0.2"

@@ -1,4 +1,4 @@
-use clap::{App, Arg, ArgMatches};
+use clap::{App, Arg, ArgMatches, SubCommand};
 
 pub fn init() -> Box<ArgMatches<'static>> {
   let app = App::new("Wiki")
@@ -20,7 +20,8 @@ pub fn init() -> Box<ArgMatches<'static>> {
         .default_value("storage")
         .help("Compiled wiki storage")
         .takes_value(true),
-    );
+    )
+    .subcommand(SubCommand::with_name("reset").about("Clean up storage and search indexes"));
 
   return Box::new(app.get_matches());
 }
