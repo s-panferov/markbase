@@ -7,14 +7,24 @@ edition = "2018"
 [dependencies]
 actix-web="*"
 actix="*"
-wiki-log = { path = "../wiki-log" }
-wiki-db = { path = "../wiki-db" }
-wiki-vm = { path = "../wiki-vm" }
-wiki-fs = { path = "../wiki-fs" }
 url="1.7"
 futures-preview = "0.3.0-alpha.10"
 clap="*"
 failure="^0.1.3"
+slog="*"
+slog-json="*"
+slog-term="*"
+slog-async="*"
+rocksdb="*"
+tantivy="*"
+serde="*"
+serde_derive="*"
+serde_yaml="*"
+serde_json="*"
+sha2="*"
+notify="4.0.0"
+walkdir="2"
+pulldown-cmark = { git = "https://github.com/raphlinus/pulldown-cmark", branch = "new_algo" }
 
 [dependencies.config]
 version = "0.9"

@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use wiki_db::WikiBase;
-use wiki_log::Logger;
+use crate::db::WikiBase;
+use crate::log::Logger;
 
 pub struct Context {
   pub root: PathBuf,
@@ -10,6 +10,6 @@ pub struct Context {
   pub log: Arc<Logger>,
 }
 
-struct AppState {
-  ctx: Arc<Context>,
+pub struct AppState {
+  pub ctx: Arc<Context>,
 }

@@ -3,19 +3,12 @@ extern crate serde_yaml;
 extern crate sha2;
 extern crate tantivy;
 
-#[macro_use]
-extern crate serde_derive;
-
 use failure::Fail;
 use rocksdb::DB;
 use std::path::Path;
 
-pub use self::article::{Article, ArticleKey};
-
-mod article;
-mod search;
-
-use self::search::SearchEngine;
+pub use crate::article::{Article, ArticleKey};
+use crate::search::SearchEngine;
 
 #[derive(Debug, Fail)]
 pub enum BaseError {
@@ -33,6 +26,11 @@ impl WikiBase {
     let db = DB::open_default(&storage.join("rocksdb")).unwrap();
     let search = SearchEngine::new(&storage.join("tantivy"));
     WikiBase { db, search }
+  }
+
+  pub fn iter(&self) -> impl Iterator<Item = Article> {
+    let iter = self.db.iterator(rocksdb::IteratorMode::Start);
+    iter.map(|a| serde_json::from_slice(&*a.1).unwrap())
   }
 
   pub fn get(&self, key: &ArticleKey) -> Option<Article> {

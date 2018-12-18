@@ -6,8 +6,8 @@ use slog::slog_o;
 pub mod prelude {
    pub use slog::crit;
    pub use slog::debug;
-   pub use slog::info;
    pub use slog::error;
+   pub use slog::info;
    pub use slog::slog_b;
    pub use slog::slog_info;
    pub use slog::slog_kv;

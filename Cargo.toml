@@ -1,11 +1,7 @@
 [workspace]
 
 members = [
-    "wiki-log",
-    "wiki-db",
-    "wiki-vm",
-    "wiki-fs",
-    "wiki-host",
+    "wiki",
 ]
 
 [profile.dev]
