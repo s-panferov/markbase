@@ -1,3 +1,3 @@
 # mindbase
 
-Rust and JS based knowledge base (wiki) backed by `mdx` and `git`
+Rust and JS based knowledge base (wiki) backed by markdown and file system.

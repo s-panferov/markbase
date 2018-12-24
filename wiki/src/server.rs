@@ -1,14 +1,28 @@
-use actix_web::{server, App, HttpRequest, Responder};
+use actix_web::{server, App, HttpRequest, HttpResponse, Responder};
 use std::sync::Arc;
 
 use crate::state::AppState;
+
+use typed_html::{dom::DOMTree, html};
 
 fn index(req: &HttpRequest<Arc<AppState>>) -> impl Responder {
   let state = req.state();
   for article in state.ctx.base.iter() {
     println!("Article {:?}", article);
   }
-  "Hello"
+
+  let html: DOMTree<String> = html! {
+    <html id="hello-world">
+      <head>
+        <title>"Test"</title>
+      </head>
+      <body></body>
+    </html>
+  };
+
+  HttpResponse::Ok()
+    .content_type("text/html")
+    .body(html.to_string())
 }
 
 pub fn start(state: Arc<AppState>) {

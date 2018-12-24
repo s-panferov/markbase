@@ -1,5 +1,6 @@
 #![feature(async_await)]
 #![feature(futures_api)]
+#![feature(proc_macro_hygiene)]
 
 #[macro_use]
 extern crate serde_derive;

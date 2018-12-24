@@ -25,6 +25,7 @@ sha2="*"
 notify="4.0.0"
 walkdir="2"
 pulldown-cmark = { git = "https://github.com/raphlinus/pulldown-cmark", branch = "new_algo" }
+typed-html="*"
 
 [dependencies.config]
 version = "0.9"
