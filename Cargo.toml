@@ -6,6 +6,3 @@ members = [
 
 [profile.dev]
 lto = false
-
-[patch.crates-io]
-rocksdb = { path = '../rust-rocksdb' }

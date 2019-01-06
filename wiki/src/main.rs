@@ -8,6 +8,7 @@ extern crate serde_derive;
 use std::path::PathBuf;
 use std::sync::Arc;
 
+use actix::prelude::*;
 use crate::log::prelude::*;
 
 mod article;
@@ -52,51 +53,54 @@ fn main() {
 
   let _cfg = conf::init();
 
-  let mut worker = work::WorkerPool::new();
-
-  let storage = PathBuf::from(storage);
+  let base = crate::db::WikiBase::new(&storage);
   let root = PathBuf::from(input);
 
-  let base = crate::db::WikiBase::new(&storage);
-  let ctx = Arc::new(self::state::Context {
-    root,
+  let env = Arc::new(self::state::WikiEnv {
+    root: root.clone(),
     base,
     log: log.clone(),
   });
 
-  std::thread::spawn({
-    let ctx = ctx.clone();
-    move || {
-      let rx = crate::fs::scan(&ctx.root);
-      for path in rx.iter() {
-        if path.to_str().unwrap().ends_with(".mdx") {
-          debug!(log, "Visit files"; "file" => path.to_str().unwrap());
-          // FIXME blocking
-          futures::executor::block_on(worker.compile(ctx.clone(), path));
-        }
-      }
-
-      let rx = crate::fs::watch(&ctx.root);
-      for event in rx.iter() {
-        match event {
-          crate::fs::WatchEvent::Update(path) => {
-            if path.to_str().unwrap().ends_with(".mdx") {
-              debug!(log, "File updated"; "file" => path.to_str().unwrap());
-              // FIXME blocking
-              futures::executor::block_on(worker.compile(ctx.clone(), path));
-            }
-          }
-          crate::fs::WatchEvent::Remove(path) => {
-            debug!(log, "File removed"; "file" => path.to_str().unwrap());
-          }
-          crate::fs::WatchEvent::Rename(from, to) => {
-            debug!(log, "File renamed"; "file" => to.to_str().unwrap(), "from" => from.to_str().unwrap());
-          }
-        }
-      }
-    }
+  let code = actix::System::run(move || {
+    let worker = work::WikiCompiler{ env: env.clone() }.start();
+    let fs = fs::WikiFs{folder: root, rx: worker.recipient()}.start();
+    let state = Arc::new(crate::state::AppState { env });
+    server::start(state);
   });
 
-  let state = Arc::new(crate::state::AppState { ctx });
-  server::start(state);
+  std::process::exit(code);
+
+  // // std::thread::spawn({
+  // //   let ctx = ctx.clone();
+  // //   move || {
+  // //     let rx = crate::fs::scan(&ctx.root);
+  // //     for path in rx.iter() {
+  // //       if path.to_str().unwrap().ends_with(".mdx") {
+  // //         debug!(log, "Visit files"; "file" => path.to_str().unwrap());
+  // //         // FIXME blocking
+  // //         futures::executor::block_on(worker.compile(ctx.clone(), path));
+  // //       }
+  // //     }
+
+  // //     let rx = crate::fs::watch(&ctx.root);
+  // //     for event in rx.iter() {
+  // //       match event {
+  // //         crate::fs::WatchEvent::Update(path) => {
+  // //           if path.to_str().unwrap().ends_with(".mdx") {
+  // //             debug!(log, "File updated"; "file" => path.to_str().unwrap());
+  // //             // FIXME blocking
+  // //             futures::executor::block_on(worker.compile(ctx.clone(), path));
+  // //           }
+  // //         }
+  // //         crate::fs::WatchEvent::Remove(path) => {
+  // //           debug!(log, "File removed"; "file" => path.to_str().unwrap());
+  // //         }
+  // //         crate::fs::WatchEvent::Rename(from, to) => {
+  // //           debug!(log, "File renamed"; "file" => to.to_str().unwrap(), "from" => from.to_str().unwrap());
+  // //         }
+  // //       }
+  // //     }
+  // //   }
+  // });
 }

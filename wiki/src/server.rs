@@ -7,7 +7,7 @@ use typed_html::{dom::DOMTree, html};
 
 fn index(req: &HttpRequest<Arc<AppState>>) -> impl Responder {
   let state = req.state();
-  for article in state.ctx.base.iter() {
+  for article in state.env.base.iter() {
     println!("Article {:?}", article);
   }
 
@@ -29,5 +29,5 @@ pub fn start(state: Arc<AppState>) {
   server::new(move || App::with_state(state.clone()).resource("/", |r| r.f(index)))
     .bind("127.0.0.1:8080")
     .unwrap()
-    .run();
+    .start();
 }
