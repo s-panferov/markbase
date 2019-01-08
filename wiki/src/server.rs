@@ -3,22 +3,29 @@ use std::sync::Arc;
 
 use crate::state::AppState;
 
-use typed_html::{dom::DOMTree, html};
+use typed_html::{dom::DOMTree, html, text};
 
 fn index(req: &HttpRequest<Arc<AppState>>) -> impl Responder {
   let state = req.state();
-  for article in state.env.base.iter() {
-    println!("Article {:?}", article);
-  }
 
-  let html: DOMTree<String> = html! {
+  let html: DOMTree<String> = html!(
     <html id="hello-world">
       <head>
         <title>"Test"</title>
       </head>
-      <body></body>
+      <body>
+        {
+          state.env.base.iter().map(|a| {
+            println!("{:?}", a);
+            let title = a.title;
+            html!(
+              <a>{text!("{}", title)}</a>
+            )
+          })
+        }
+      </body>
     </html>
-  };
+  );
 
   HttpResponse::Ok()
     .content_type("text/html")

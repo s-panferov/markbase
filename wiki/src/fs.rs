@@ -16,15 +16,15 @@ pub enum WatchEvent {
   Rename(PathBuf, PathBuf),
 }
 
-pub struct WikiFs {
+pub struct WikiWatch {
   pub folder: PathBuf,
   pub rx: Recipient<WatchEvent>
 }
 
-impl Actor for WikiFs {
+impl Actor for WikiWatch {
   type Context = actix::Context<Self>;
 
-  fn started(&mut self, ctx: &mut Self::Context) {
+  fn started(&mut self, _ctx: &mut Self::Context) {
     let walker = WalkDir::new(&self.folder)
       .follow_links(true)
       .into_iter()
